@@ -6,6 +6,7 @@ import { useSwipeable } from 'react-swipeable';
 import Lottie from "lottie-react";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
+
 export default function Home() {
   const [loading, setLoading] = useState()
   const [data, setData] = useState(null);

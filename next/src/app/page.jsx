@@ -160,19 +160,19 @@ export default function Home() {
       }
 
       {view == 'start' && (
-        <div className='flex flex-col gap-10 items-center justify-around h-[60vh] text-center text-black text-2xl'>
+        <div className='flex flex-col gap-10 items-center justify-between h-[80vh]  text-center text-black text-2xl'>
           <div className='w-full flex flex-col  text-black gap-5 text-2xl'>
             <p className='newFont outlined-text'>Swipe Right to Like</p>
             <p className='newFont outlined-text'>Swipe Left to Dislike</p>
           </div>
           <div className='flex flex-col gap-5 items-center'>
-            <p className='newFont outlined-text'>Enter the Number of images you wish to see</p>
+            <p className='newFont outlined-text px-10'>Enter the Number of images you wish to see</p>
             <input className='w-[10rem] bg-white border-pink-500 border-5 text-black rounded-2xl p-5 text-center text-2xl' placeholder='10 - 15' value={numberOfPic} type='number' onChange={(e) => setNumberOfPic(e.target.value)} />
           </div>
           <button
-            disabled={numberOfPic < 1 || numberOfPic > 15 || numberOfPic == undefined}
-            style={{ backgroundColor: numberOfPic < 1 || numberOfPic > 15 || numberOfPic == undefined ? 'grey' : 'white' }}
-            className=' bg-white text-2xl border-black border-3 rounded-2xl p-4 text-black fixed bottom-10' onClick={() => setView('matching')}>
+            disabled={numberOfPic < 10 || numberOfPic > 15 || numberOfPic == undefined}
+            style={{ backgroundColor: numberOfPic < 10 || numberOfPic > 15 || numberOfPic == undefined ? 'grey' : 'white' }}
+            className=' bg-white text-2xl border-black border-3 rounded-2xl p-4 text-black ' onClick={() => setView('matching')}>
             Continue
           </button>
         </div>

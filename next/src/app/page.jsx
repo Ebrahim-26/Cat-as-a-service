@@ -12,6 +12,15 @@ export default function Home() {
   const [data, setData] = useState(null);
   const [imgList, setImgList] = useState([]);
   const [counts, setCounts] = useState(0);
+  const [name, setName] = useState('')
+  const [view, setView] = useState('start')
+  const [clickLike, setClickLike] = useState(false)
+  const [clickDislike, setClickDislike] = useState(false)
+  const [animationData, setAnimationData] = useState(null);
+  const [dislikeAnimation, setDislikeAnimation] = useState(null)
+  const [numberOfPic, setNumberOfPic] = useState()
+  const [errorMessage, setErrorMessage] = useState('')
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("catIndex");
@@ -26,12 +35,6 @@ export default function Home() {
     }
   }, [counts]);
 
-  const [view, setView] = useState('start')
-  const [clickLike, setClickLike] = useState(false)
-  const [clickDislike, setClickDislike] = useState(false)
-  const [animationData, setAnimationData] = useState(null);
-  const [dislikeAnimation, setDislikeAnimation] = useState(null)
-  const [numberOfPic, setNumberOfPic] = useState()
   useEffect(() => { //Fetch Lotties
     const fetchAnimations = async () => {
       try {
@@ -93,7 +96,6 @@ export default function Home() {
     }
   }, [data]);
 
-
   useEffect(() => {
     const storedList = JSON.parse(localStorage.getItem("likedCats") || "[]");
     const storedData = JSON.parse(localStorage.getItem("catData") || "null");
@@ -142,15 +144,39 @@ export default function Home() {
     setCounts(0);
     setNumberOfPic();
     setData();
+    setName('')
     localStorage.removeItem("likedCats");
     localStorage.removeItem("catIndex");
     localStorage.removeItem("catData");
   };
 
+const handleContinue = () => {
+  if (!name && !numberOfPic) {
+    setErrorMessage('Please fill in your name and number of images to view');
+  } else if ((numberOfPic < 10 || numberOfPic > 15) && !name) {
+    setErrorMessage('Please enter a valid name and a number between 10 to 15');
+  } else if (!numberOfPic) {
+    setErrorMessage('Please enter the number of images to view');
+  } else if (isNaN(numberOfPic) || numberOfPic < 10 || numberOfPic > 15) {
+    setErrorMessage('Please enter a number between 10 to 15');
+  } else if (!name) {
+    setErrorMessage('Please enter your name');
+  } else {
+    setErrorMessage('');
+    setView('matching');
+  }
+};
+
 
   return (
     <div {...handlers} className='flex flex-col gap-5 min-h-screen bg-cover bg-center' style={{ backgroundImage: "url('/assets/paw.jpg')" }}>
       <p className='newFont text-5xl text-black text-center w-full outlined-text mt-10'>Paws & Preferences</p>
+        {view == 'matching' && (
+        <div className='text-black text-2xl text-center'>
+            <p>Hi {name},</p>
+            <p>  Swipe Rigth to like and left to dislike</p>
+        </div>
+        )}
       {view == 'view' &&
         (
           <div className='flex w-full justify-center'>
@@ -166,22 +192,24 @@ export default function Home() {
             <p className='newFont outlined-text'>Swipe Left to Dislike</p>
           </div>
           <div className='flex flex-col gap-5 items-center'>
+            <input className='w-[80%] bg-white border-pink-500 border-5 text-black rounded-2xl p-5 text-center text-2xl' placeholder='Enter Your Name' value={name} type='text' onChange={(e) => setName(e.target.value)} />
             <p className='newFont outlined-text px-10'>Enter the Number of images you wish to see</p>
             <input className='w-[10rem] bg-white border-pink-500 border-5 text-black rounded-2xl p-5 text-center text-2xl' placeholder='10 - 15' value={numberOfPic} type='number' onChange={(e) => setNumberOfPic(e.target.value)} />
           </div>
+          <p className='text-lg text-red-700'>{errorMessage}</p>
           <button
-            disabled={numberOfPic < 10 || numberOfPic > 15 || numberOfPic == undefined}
-            style={{ backgroundColor: numberOfPic < 10 || numberOfPic > 15 || numberOfPic == undefined ? 'grey' : 'white' }}
-            className=' bg-white text-2xl border-black border-3 rounded-2xl p-4 text-black ' onClick={() => setView('matching')}>
+            // disabled={numberOfPic < 10 || numberOfPic > 15 || numberOfPic == undefined || name ==''}
+            style={{ backgroundColor: numberOfPic < 10 || numberOfPic > 15 || numberOfPic == undefined || name =='' ? 'grey' : 'white' }}
+            className=' bg-white text-2xl border-black border-3 rounded-2xl p-4 text-black ' onClick={handleContinue}>
             Continue
           </button>
         </div>
       )}
       {view == 'matching' && (
-        <div className='flex flex-col justify-around h-[70vh] items-center'>
+        <div className='flex flex-col justify-around h-[70vh] items-center'>        
           <div className='relative gap-10'>
             {data && data[counts] && (
-              <div className='flex items-center justify-center'>
+              <div className='flex flex-col items-center bg- gap-10 justify-center'>
                 <div className="w-54 h-54 absolute">
                   {clickLike && (
                     <Lottie animationData={animationData} loop={true} />
